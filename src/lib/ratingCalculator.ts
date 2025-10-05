@@ -12,13 +12,13 @@ export type ShotType =
   | 'drop'
   | 'smash-out';
 
-export type TechnicalExecution = 'perfect-shot' | 'good-shot' | 'minor-error' | 'major-error';
+export type TechnicalExecution = 'perfect' | 'good' | 'minor-error' | 'major-error';
 
 export type Outcome = 'winner' | 'loser' | 'in' | 'out';
 
 export type CourtPosition = 'good' | 'bad' | 'strategic-change' | 'wall' | 'baseline' | 'net';
 
-export type MatchContext = 'routine shot' | 'normal play' | 'crucial-point' | 'under-pressure';
+export type MatchContext = 'routine' | 'normal' | 'crucial-point' | 'under-pressure';
 
 const BASE_SHOT_VALUES: Record<ShotType, number> = {
   'forehand': 1.0,
@@ -36,8 +36,8 @@ const BASE_SHOT_VALUES: Record<ShotType, number> = {
 };
 
 const TECHNICAL_MULTIPLIERS: Record<TechnicalExecution, number> = {
-  'perfect-shot': 2.0,
-  'good-shot': 1.5,
+  'perfect': 2.0,
+  'good': 1.5,
   'minor-error': 0.8,
   'major-error': 0.3,
 };
