@@ -91,105 +91,99 @@ export default function FormulaBreakdown({
   const totalMultiplier = technicalMult * positionMult * contextMult * consecutiveMult * opponentMult;
 
   return (
-    <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 border border-gray-200">
-      <div className="flex items-center gap-2 mb-4">
-        <Calculator className="w-5 h-5 text-indigo-600" />
-        <h4 className="font-semibold text-gray-800">Formula Breakdown</h4>
+    <div className="space-y-4">
+      <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border-2 border-blue-200">
+        <div className="text-[10px] font-bold text-blue-800 mb-2 uppercase tracking-wider flex items-center gap-1.5">
+          <Calculator className="w-3.5 h-3.5" />
+          Base Calculation
+        </div>
+        <div className="font-mono text-xs text-gray-700 mb-1.5">
+          Rating = Base × Outcome × Multiplier
+        </div>
+        <div className="font-mono text-sm text-blue-700 font-black">
+          {calculatedChange.toFixed(2)} = {baseValue} × {outcomeMult} × {totalMultiplier.toFixed(2)}
+        </div>
       </div>
 
-      <div className="space-y-4">
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
-          <div className="text-xs font-semibold text-gray-700 mb-3 uppercase tracking-wider">
-            Base Calculation
+      <div className="bg-white rounded-lg p-4 border border-gray-200">
+        <div className="text-[10px] font-bold text-gray-700 mb-3 uppercase tracking-wider">
+          Multiplier Components
+        </div>
+        <div className="space-y-1.5 text-xs">
+          <div className="flex justify-between items-center py-1">
+            <span className="text-gray-600 font-medium">Base Shot ({shotType})</span>
+            <span className="font-mono font-bold text-gray-900">{baseValue}</span>
           </div>
-          <div className="font-mono text-sm text-gray-800 mb-2">
-            Rating Change = Base Value × Outcome × Total Multiplier
+          <div className="h-px bg-gray-200"></div>
+          <div className="flex justify-between items-center py-1">
+            <span className="text-gray-600 font-medium">Technical</span>
+            <span className="font-mono font-bold text-gray-900">×{technicalMult}</span>
           </div>
-          <div className="font-mono text-sm text-indigo-600 font-semibold">
-            {calculatedChange.toFixed(2)} = {baseValue} × {outcomeMult} × {totalMultiplier.toFixed(2)}
+          <div className="flex justify-between items-center py-1">
+            <span className="text-gray-600 font-medium">Position</span>
+            <span className="font-mono font-bold text-gray-900">×{positionMult}</span>
+          </div>
+          <div className="flex justify-between items-center py-1">
+            <span className="text-gray-600 font-medium">Context</span>
+            <span className="font-mono font-bold text-gray-900">×{contextMult}</span>
+          </div>
+          <div className="flex justify-between items-center py-1">
+            <span className="text-gray-600 font-medium">Consecutive</span>
+            <span className="font-mono font-bold text-gray-900">×{consecutiveMult.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between items-center py-1">
+            <span className="text-gray-600 font-medium">Opponent Diff</span>
+            <span className="font-mono font-bold text-gray-900">×{opponentMult.toFixed(2)}</span>
+          </div>
+          <div className="h-px bg-gray-300 my-1.5"></div>
+          <div className="flex justify-between items-center py-1.5 bg-blue-50 -mx-4 px-4 rounded">
+            <span className="text-gray-800 font-bold">Total Multiplier</span>
+            <span className="font-mono text-blue-700 font-black">×{totalMultiplier.toFixed(2)}</span>
           </div>
         </div>
+      </div>
 
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
-          <div className="text-xs font-semibold text-gray-700 mb-3 uppercase tracking-wider">
-            Multiplier Components
+      <div className="bg-white rounded-lg p-4 border border-gray-200">
+        <div className="text-[10px] font-bold text-gray-700 mb-3 uppercase tracking-wider">
+          Opponent Differential
+        </div>
+        <div className="text-xs space-y-1.5">
+          <div className="flex justify-between py-1">
+            <span className="text-gray-600 font-medium">Player Rating</span>
+            <span className="font-mono font-bold text-gray-900">{playerRating}</span>
           </div>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">Base Shot Value ({shotType}):</span>
-              <span className="font-mono font-semibold text-gray-900">{baseValue}</span>
-            </div>
-            <div className="h-px bg-gray-200"></div>
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">Technical Execution:</span>
-              <span className="font-mono font-semibold text-gray-900">×{technicalMult}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">Court Position:</span>
-              <span className="font-mono font-semibold text-gray-900">×{positionMult}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">Match Context:</span>
-              <span className="font-mono font-semibold text-gray-900">×{contextMult}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">Consecutive Shots:</span>
-              <span className="font-mono font-semibold text-gray-900">×{consecutiveMult.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">Opponent Differential:</span>
-              <span className="font-mono font-semibold text-gray-900">×{opponentMult.toFixed(2)}</span>
-            </div>
-            <div className="h-px bg-gray-300 my-2"></div>
-            <div className="flex justify-between items-center font-semibold">
-              <span className="text-gray-800">Total Multiplier:</span>
-              <span className="font-mono text-indigo-600">×{totalMultiplier.toFixed(2)}</span>
-            </div>
+          <div className="flex justify-between py-1">
+            <span className="text-gray-600 font-medium">Opponent Rating</span>
+            <span className="font-mono font-bold text-gray-900">{opponentRating}</span>
+          </div>
+          <div className="flex justify-between py-1 bg-slate-50 -mx-4 px-4 rounded">
+            <span className="text-gray-700 font-bold">Differential</span>
+            <span className={`font-mono font-black ${opponentRating > playerRating ? 'text-red-600' : 'text-green-600'}`}>
+              {opponentRating > playerRating ? '+' : ''}{opponentRating - playerRating}
+            </span>
+          </div>
+          <div className="text-[10px] text-gray-500 mt-2 leading-relaxed italic bg-gray-50 p-2 rounded">
+            {isVictory ?
+              (opponentRating > playerRating ?
+                'Beating higher-rated opponent increases gain' :
+                'Beating lower-rated opponent reduces gain') :
+              (opponentRating > playerRating ?
+                'Losing to higher-rated opponent reduces loss' :
+                'Losing to lower-rated opponent increases loss')
+            }
           </div>
         </div>
+      </div>
 
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
-          <div className="text-xs font-semibold text-gray-700 mb-3 uppercase tracking-wider">
-            Opponent Rating Differential
-          </div>
-          <div className="text-sm space-y-1">
-            <div className="flex justify-between">
-              <span className="text-gray-600">Player Rating:</span>
-              <span className="font-mono font-semibold text-gray-900">{playerRating}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Opponent Rating:</span>
-              <span className="font-mono font-semibold text-gray-900">{opponentRating}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Differential:</span>
-              <span className={`font-mono font-semibold ${opponentRating > playerRating ? 'text-red-600' : 'text-green-600'}`}>
-                {opponentRating > playerRating ? '+' : ''}{opponentRating - playerRating}
-              </span>
-            </div>
-            <div className="text-xs text-gray-500 mt-2 italic">
-              {isVictory ?
-                (opponentRating > playerRating ?
-                  'Beating higher-rated opponent increases rating gain' :
-                  'Beating lower-rated opponent reduces rating gain') :
-                (opponentRating > playerRating ?
-                  'Losing to higher-rated opponent reduces rating loss' :
-                  'Losing to lower-rated opponent increases rating loss')
-              }
-            </div>
-          </div>
+      <div className="bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg p-4 border-2 border-slate-600">
+        <div className="text-[10px] font-bold text-slate-300 mb-2 uppercase tracking-wider">
+          Final Result
         </div>
-
-        <div className="bg-indigo-50 rounded-lg p-4 border-2 border-indigo-200">
-          <div className="text-xs font-semibold text-indigo-800 mb-2 uppercase tracking-wider">
-            Final Result
-          </div>
-          <div className="text-2xl font-bold text-indigo-600">
-            {calculatedChange >= 0 ? '+' : ''}{calculatedChange.toFixed(2)} Rating Points
-          </div>
-          <div className="text-xs text-indigo-700 mt-1">
-            {playerRating} → {Math.round(playerRating + calculatedChange)}
-          </div>
+        <div className="text-2xl font-black text-white">
+          {calculatedChange >= 0 ? '+' : ''}{calculatedChange.toFixed(2)} pts
+        </div>
+        <div className="text-xs text-slate-300 mt-1 font-mono">
+          {playerRating} → {Math.round(playerRating + calculatedChange)}
         </div>
       </div>
     </div>

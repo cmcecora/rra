@@ -360,110 +360,106 @@ export default function ShotSimulator() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 py-8 px-4">
-      <div className="max-w-2xl mx-auto">
-        <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
-          <div className="bg-gradient-to-r from-indigo-600 to-blue-600 p-8 text-white">
-            <div className="flex items-center gap-3 mb-2">
-              <Trophy className="w-8 h-8" />
-              <h1 className="text-3xl font-bold">Raydel Padel Rating System</h1>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
+      {/* Fixed Header */}
+      <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm">
+        <div className="max-w-[1800px] mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-2 rounded-xl">
+                <Trophy className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-gray-900">Raydel Padel Rating System</h1>
+                <p className="text-xs text-gray-500">AI-Powered Performance Analytics</p>
+              </div>
             </div>
-            <p className="text-indigo-100 text-sm">
-              AI-Powered Advanced Performance Analytics
-            </p>
+            <div className="flex items-center gap-6">
+              <div className="text-center px-6 py-2 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border border-blue-200">
+                <div className="text-3xl font-bold text-blue-700">{currentRating}</div>
+                <div className="text-xs text-blue-600 font-medium">Current Rating</div>
+              </div>
+              {shotHistory.length > 0 && (
+                <button
+                  onClick={resetSimulation}
+                  className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white text-sm font-semibold rounded-lg transition-all shadow-md hover:shadow-lg"
+                >
+                  Reset
+                </button>
+              )}
+            </div>
           </div>
+        </div>
+      </div>
 
-          <div className="p-8">
-            <div className="mb-8">
-              <div className="flex items-center gap-2 mb-4">
-                <TrendingUp className="w-6 h-6 text-indigo-600" />
-                <h2 className="text-xl font-semibold text-gray-800">Revolutionary Rating System</h2>
-              </div>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                Experience the future of competitive evaluation with our proprietary Raydel Racing Algorithm (RRA®).
-                This revolutionary system analyzes individual shot performance and strategic decision-making to provide
-                unparalleled insights into player development.
-              </p>
+      {/* Main Content - 3 Column Layout */}
+      <div className="max-w-[1800px] mx-auto px-6 py-6">
+        <div className="grid grid-cols-12 gap-6 h-[calc(100vh-120px)]">
+          {/* LEFT SIDEBAR - Scenarios */}
+          <div className="col-span-3 bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col">
+            <div className="bg-gradient-to-br from-slate-50 to-slate-100 border-b border-gray-200 p-4">
+              <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">Quick Scenarios</h3>
+              <p className="text-xs text-gray-500 mt-1">Click to load configuration</p>
             </div>
 
-            <div className="bg-indigo-50 rounded-2xl p-6 mb-8">
-              <div className="text-center">
-                <div className="text-5xl font-bold text-indigo-600 mb-2">
-                  {currentRating}
-                </div>
-                <div className="text-sm text-indigo-700 font-medium">Current Rating</div>
-              </div>
+            {/* Tabs */}
+            <div className="flex border-b border-gray-200 bg-gray-50">
+              <button className="flex-1 px-4 py-2 text-xs font-semibold text-blue-700 border-b-2 border-blue-600 bg-white">
+                Prebuilt
+              </button>
+              <button
+                onClick={generateRandomScenarios}
+                disabled={isRolling}
+                className="flex-1 px-4 py-2 text-xs font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors flex items-center justify-center gap-1"
+              >
+                <Dices className={`w-3 h-3 ${isRolling ? 'animate-spin' : ''}`} />
+                {isRolling ? 'Rolling...' : 'Random'}
+              </button>
             </div>
 
-            <div className="mb-8">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">Shot Simulator</h3>
-              <p className="text-sm font-medium text-gray-700 mb-3">Prebuilt Scenarios</p>
-              <p className="text-xs text-gray-500 mb-4">Click any scenario to load its configuration</p>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
-                {QUICK_SCENARIOS.map((scenario, index) => (
-                  <button
-                    key={index}
-                    onClick={() => applyQuickScenario(scenario)}
-                    className="bg-gradient-to-br from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white p-4 rounded-xl text-left transition-all shadow-md hover:shadow-lg group"
-                  >
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="text-sm font-semibold leading-tight">{scenario.name}</div>
-                      <div className="text-xs bg-white/20 px-2 py-1 rounded">
-                        {scenario.config.opponentRating}
-                      </div>
+            {/* Scrollable Scenarios */}
+            <div className="flex-1 overflow-y-auto p-3 space-y-2">
+              {QUICK_SCENARIOS.map((scenario, index) => (
+                <button
+                  key={index}
+                  onClick={() => applyQuickScenario(scenario)}
+                  className="w-full bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white p-3 rounded-lg text-left transition-all shadow-sm hover:shadow-md group"
+                >
+                  <div className="flex items-start justify-between mb-1.5">
+                    <div className="text-xs font-bold leading-tight pr-2">{scenario.name}</div>
+                    <div className="text-[10px] bg-white/25 px-1.5 py-0.5 rounded font-medium whitespace-nowrap">
+                      {scenario.config.opponentRating}
                     </div>
-                    <div className="text-xs text-indigo-100 space-y-1">
-                      <div>
-                        {SHOT_TYPES.find((t) => t.value === scenario.config.shotType)?.label} • {' '}
-                        {TECHNICAL_EXECUTIONS.find((t) => t.value === scenario.config.technicalExecution)?.label}
-                      </div>
-                      <div>
-                        {OUTCOMES.find((o) => o.value === scenario.config.outcome)?.label} • {' '}
-                        {MATCH_CONTEXTS.find((c) => c.value === scenario.config.matchContext)?.label}
-                      </div>
+                  </div>
+                  <div className="text-[10px] text-blue-50 space-y-0.5">
+                    <div>
+                      {SHOT_TYPES.find((t) => t.value === scenario.config.shotType)?.label} • {' '}
+                      {TECHNICAL_EXECUTIONS.find((t) => t.value === scenario.config.technicalExecution)?.label}
                     </div>
-                  </button>
-                ))}
-              </div>
+                    <div>
+                      {OUTCOMES.find((o) => o.value === scenario.config.outcome)?.label} • {' '}
+                      {MATCH_CONTEXTS.find((c) => c.value === scenario.config.matchContext)?.label}
+                    </div>
+                  </div>
+                </button>
+              ))}
 
-              <div className="mb-6">
-                <div className="flex items-center justify-between mb-3">
-                  <p className="text-sm font-medium text-gray-700">Random Scenarios</p>
-                  <button
-                    onClick={generateRandomScenarios}
-                    disabled={isRolling}
-                    className={`group relative bg-gradient-to-br from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-4 py-2 rounded-lg font-semibold text-sm shadow-md hover:shadow-lg transition-all flex items-center gap-2 ${
-                      isRolling ? 'opacity-75 cursor-not-allowed' : ''
-                    }`}
-                  >
-                    <Dices
-                      className={`w-5 h-5 transition-transform ${
-                        isRolling ? 'animate-spin' : 'group-hover:rotate-12'
-                      }`}
-                    />
-                    <span>{isRolling ? 'Rolling...' : 'Roll the Dice'}</span>
-                  </button>
-                </div>
-
-                {randomScenarios.length > 0 && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {randomScenarios.length > 0 && (
+                <div className="border-t border-gray-200 pt-2 mt-2">
+                  <div className="space-y-2">
                     {randomScenarios.map((scenario, index) => (
                       <button
                         key={index}
                         onClick={() => applyQuickScenario(scenario)}
-                        className="bg-gradient-to-br from-purple-400 to-pink-400 hover:from-purple-500 hover:to-pink-500 text-white p-4 rounded-xl text-left transition-all shadow-md hover:shadow-lg transform hover:scale-105 animate-fadeIn"
-                        style={{
-                          animationDelay: `${index * 100}ms`,
-                        }}
+                        className="w-full bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white p-3 rounded-lg text-left transition-all shadow-sm hover:shadow-md"
                       >
-                        <div className="flex items-start justify-between mb-2">
-                          <div className="text-sm font-semibold leading-tight">{scenario.name}</div>
-                          <div className="text-xs bg-white/20 px-2 py-1 rounded">
+                        <div className="flex items-start justify-between mb-1.5">
+                          <div className="text-xs font-bold leading-tight pr-2">{scenario.name}</div>
+                          <div className="text-[10px] bg-white/25 px-1.5 py-0.5 rounded font-medium whitespace-nowrap">
                             {scenario.config.opponentRating}
                           </div>
                         </div>
-                        <div className="text-xs text-purple-50 space-y-1">
+                        <div className="text-[10px] text-emerald-50 space-y-0.5">
                           <div>
                             {SHOT_TYPES.find((t) => t.value === scenario.config.shotType)?.label} • {' '}
                             {TECHNICAL_EXECUTIONS.find((t) => t.value === scenario.config.technicalExecution)?.label}
@@ -476,29 +472,37 @@ export default function ShotSimulator() {
                       </button>
                     ))}
                   </div>
-                )}
-              </div>
+                </div>
+              )}
+            </div>
+          </div>
 
-              <p className="text-sm font-semibold text-gray-700 mb-4">Custom Shot Configuration</p>
+          {/* CENTER PANEL - Configuration */}
+          <div className="col-span-5 bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col">
+            <div className="bg-gradient-to-br from-slate-50 to-slate-100 border-b border-gray-200 p-4">
+              <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">Shot Configuration</h3>
+              <p className="text-xs text-gray-500 mt-1">Configure parameters and calculate impact</p>
+            </div>
 
+            <div className="flex-1 overflow-y-auto p-6">
               {shotDescription && (
-                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 rounded-r-lg">
-                  <p className="text-xs font-semibold text-blue-800 mb-1 uppercase tracking-wide">
-                    Shot Scenario Description
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 border-l-4 border-blue-500 p-4 mb-6 rounded-r-lg">
+                  <p className="text-[10px] font-bold text-blue-800 mb-1 uppercase tracking-wider">
+                    Scenario Preview
                   </p>
-                  <p className="text-sm text-blue-900 leading-relaxed">{shotDescription}</p>
+                  <p className="text-xs text-blue-900 leading-relaxed">{shotDescription}</p>
                 </div>
               )}
 
-              <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1 uppercase tracking-wider">
+                  <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wider">
                     Shot Type
                   </label>
                   <select
                     value={shotType}
                     onChange={(e) => setShotType(e.target.value as ShotType)}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full border-2 border-gray-300 rounded-lg px-3 py-2.5 text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white hover:border-gray-400 transition-colors"
                   >
                     {SHOT_TYPES.map((type) => (
                       <option key={type.value} value={type.value}>
@@ -509,13 +513,13 @@ export default function ShotSimulator() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1 uppercase tracking-wider">
+                  <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wider">
                     Technical Execution
                   </label>
                   <select
                     value={technicalExecution}
                     onChange={(e) => setTechnicalExecution(e.target.value as TechnicalExecution)}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full border-2 border-gray-300 rounded-lg px-3 py-2.5 text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white hover:border-gray-400 transition-colors"
                   >
                     {TECHNICAL_EXECUTIONS.map((exec) => (
                       <option key={exec.value} value={exec.value}>
@@ -526,13 +530,13 @@ export default function ShotSimulator() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1 uppercase tracking-wider">
+                  <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wider">
                     Outcome
                   </label>
                   <select
                     value={outcome}
                     onChange={(e) => setOutcome(e.target.value as Outcome)}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full border-2 border-gray-300 rounded-lg px-3 py-2.5 text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white hover:border-gray-400 transition-colors"
                   >
                     {OUTCOMES.map((out) => (
                       <option key={out.value} value={out.value}>
@@ -543,13 +547,13 @@ export default function ShotSimulator() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1 uppercase tracking-wider">
+                  <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wider">
                     Court Position
                   </label>
                   <select
                     value={courtPosition}
                     onChange={(e) => setCourtPosition(e.target.value as CourtPosition)}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full border-2 border-gray-300 rounded-lg px-3 py-2.5 text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white hover:border-gray-400 transition-colors"
                   >
                     {COURT_POSITIONS.map((pos) => (
                       <option key={pos.value} value={pos.value}>
@@ -560,13 +564,13 @@ export default function ShotSimulator() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1 uppercase tracking-wider">
+                  <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wider">
                     Match Context
                   </label>
                   <select
                     value={matchContext}
                     onChange={(e) => setMatchContext(e.target.value as MatchContext)}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full border-2 border-gray-300 rounded-lg px-3 py-2.5 text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white hover:border-gray-400 transition-colors"
                   >
                     {MATCH_CONTEXTS.map((ctx) => (
                       <option key={ctx.value} value={ctx.value}>
@@ -577,7 +581,7 @@ export default function ShotSimulator() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1 uppercase tracking-wider">
+                  <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wider">
                     Consecutive Shots
                   </label>
                   <input
@@ -586,18 +590,18 @@ export default function ShotSimulator() {
                     max="20"
                     value={consecutiveShots}
                     onChange={(e) => setConsecutiveShots(parseInt(e.target.value) || 1)}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full border-2 border-gray-300 rounded-lg px-3 py-2.5 text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white hover:border-gray-400 transition-colors"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1 uppercase tracking-wider">
+                  <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wider">
                     Opponent Rating
                   </label>
                   <select
                     value={opponentRating}
                     onChange={(e) => setOpponentRating(parseInt(e.target.value))}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full border-2 border-gray-300 rounded-lg px-3 py-2.5 text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white hover:border-gray-400 transition-colors"
                   >
                     {RATING_LEVELS.map((level) => (
                       <option key={level.value} value={level.value}>
@@ -606,22 +610,102 @@ export default function ShotSimulator() {
                     ))}
                   </select>
                 </div>
-
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1 uppercase tracking-wider">
-                    Notes
-                  </label>
-                  <textarea
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                    placeholder="Add any additional notes..."
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                    rows={2}
-                  />
-                </div>
               </div>
 
-              <div className="mt-6">
+              <div className="mt-4">
+                <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wider">
+                  Notes (Optional)
+                </label>
+                <textarea
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder="Add any additional notes..."
+                  className="w-full border-2 border-gray-300 rounded-lg px-3 py-2.5 text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white hover:border-gray-400 transition-colors"
+                  rows={3}
+                />
+              </div>
+
+
+              <button
+                onClick={recordShot}
+                className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white py-4 px-4 rounded-xl font-bold text-base mt-6 transition-all shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
+              >
+                Calculate Rating Impact
+              </button>
+            </div>
+          </div>
+
+          {/* RIGHT PANEL - Results & Analysis */}
+          <div className="col-span-4 flex flex-col gap-6">
+            {/* Live Results Card */}
+            <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+              <div className="bg-gradient-to-br from-slate-50 to-slate-100 border-b border-gray-200 p-4">
+                <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">Live Results</h3>
+              </div>
+
+              <div className="p-6 space-y-4">
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300 rounded-xl p-6 text-center">
+                  <div className={`text-6xl font-black mb-1 ${calculatedChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    {calculatedChange >= 0 ? '+' : ''}{calculatedChange.toFixed(1)}
+                  </div>
+                  <div className="text-xs font-bold text-gray-600 uppercase tracking-wide">Rating Change</div>
+                </div>
+
+                <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl p-6 text-white text-center">
+                  <div className="text-5xl font-black mb-1">
+                    {Math.round(currentRating + calculatedChange)}
+                  </div>
+                  <div className="text-xs font-bold text-blue-200 uppercase tracking-wide">Projected New Rating</div>
+                </div>
+
+                <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl p-5 border border-slate-200">
+                  <h4 className="font-bold text-gray-900 mb-3 text-xs uppercase tracking-wide">Shot Summary</h4>
+                  <div className="space-y-2 text-xs">
+                    <div className="flex justify-between items-center py-1.5 border-b border-gray-200">
+                      <span className="text-gray-600 font-medium">Shot Type</span>
+                      <span className="font-bold text-gray-900">
+                        {SHOT_TYPES.find((t) => t.value === shotType)?.label}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center py-1.5 border-b border-gray-200">
+                      <span className="text-gray-600 font-medium">Technical</span>
+                      <span className="font-bold text-gray-900">
+                        {TECHNICAL_EXECUTIONS.find((t) => t.value === technicalExecution)?.label}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center py-1.5 border-b border-gray-200">
+                      <span className="text-gray-600 font-medium">Outcome</span>
+                      <span className="font-bold text-gray-900">
+                        {OUTCOMES.find((o) => o.value === outcome)?.label}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center py-1.5 border-b border-gray-200">
+                      <span className="text-gray-600 font-medium">Position</span>
+                      <span className="font-bold text-gray-900">
+                        {COURT_POSITIONS.find((p) => p.value === courtPosition)?.label}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center py-1.5 border-b border-gray-200">
+                      <span className="text-gray-600 font-medium">Context</span>
+                      <span className="font-bold text-gray-900">
+                        {MATCH_CONTEXTS.find((c) => c.value === matchContext)?.label}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center py-1.5">
+                      <span className="text-gray-600 font-medium">Total Multiplier</span>
+                      <span className="font-black text-blue-700">{calculatedMultiplier.toFixed(2)}x</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Formula Breakdown */}
+            <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex-1">
+              <div className="bg-gradient-to-br from-slate-50 to-slate-100 border-b border-gray-200 p-4">
+                <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">Formula Breakdown</h3>
+              </div>
+              <div className="p-6 overflow-y-auto max-h-[500px]">
                 <FormulaBreakdown
                   shotType={shotType}
                   technicalExecution={technicalExecution}
@@ -634,138 +718,12 @@ export default function ShotSimulator() {
                   calculatedChange={calculatedChange}
                 />
               </div>
-
-              <button
-                onClick={recordShot}
-                className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-3 px-4 rounded-xl font-semibold mt-6 transition-all shadow-lg"
-              >
-                Calculate Rating Impact
-              </button>
             </div>
-
-            <div className="mb-8">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">Shot Analysis</h3>
-
-              <div className="bg-green-50 border-2 border-green-200 rounded-2xl p-6 text-center mb-4">
-                <div className={`text-5xl font-bold mb-2 ${calculatedChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                  {calculatedChange >= 0 ? '+' : ''}{calculatedChange}
-                </div>
-                <div className="text-sm text-gray-600">Rating Change</div>
-              </div>
-
-              <div className="bg-indigo-600 rounded-2xl p-6 text-white text-center mb-4">
-                <div className="text-4xl font-bold mb-2">
-                  {Math.round(currentRating + calculatedChange)}
-                </div>
-                <div className="text-sm text-indigo-200">Projected New Rating</div>
-              </div>
-
-              <div className="bg-gray-50 rounded-2xl p-6">
-                <h4 className="font-semibold text-gray-800 mb-3">Shot Details</h4>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Shot Type:</span>
-                    <span className="font-medium text-gray-900">
-                      {SHOT_TYPES.find((t) => t.value === shotType)?.label}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Technical:</span>
-                    <span className="font-medium text-gray-900">
-                      {TECHNICAL_EXECUTIONS.find((t) => t.value === technicalExecution)?.label}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Outcome:</span>
-                    <span className="font-medium text-gray-900">
-                      {OUTCOMES.find((o) => o.value === outcome)?.label}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Position:</span>
-                    <span className="font-medium text-gray-900">
-                      {COURT_POSITIONS.find((p) => p.value === courtPosition)?.label}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Context:</span>
-                    <span className="font-medium text-gray-900">
-                      {MATCH_CONTEXTS.find((c) => c.value === matchContext)?.label}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Total Multiplier:</span>
-                    <span className="font-medium text-gray-900">{calculatedMultiplier}x</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {shotHistory.length > 0 && (
-              <div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Rating Evolution</h3>
-                <div className="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl p-6 text-white text-center mb-4">
-                  <div className="text-4xl font-bold mb-1">{currentRating}</div>
-                  <div className="text-sm text-indigo-200 mb-4">Current Rating</div>
-                  <div className="text-3xl font-bold text-green-300">
-                    {shotHistory[0] && shotHistory[0].rating_change >= 0 ? '+' : ''}
-                    {shotHistory[0]?.rating_change.toFixed(2)}
-                  </div>
-                  <div className="text-xs text-indigo-200 mt-1">Last Change</div>
-                </div>
-
-                <button
-                  onClick={resetSimulation}
-                  className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white py-3 px-4 rounded-xl text-center font-semibold cursor-pointer transition-all"
-                >
-                  Reset Simulation
-                </button>
-
-                <div className="mt-6">
-                  <h4 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                    <Trophy className="w-5 h-5 text-indigo-600" />
-                    Raydel Algorithm Factors
-                  </h4>
-                  <div className="space-y-3 text-sm">
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <div className="font-semibold text-gray-800 mb-1">
-                        Technical Execution (TECH)
-                      </div>
-                      <div className="text-gray-600">
-                        Evaluates form, mechanics, and execution quality
-                      </div>
-                    </div>
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <div className="font-semibold text-gray-800 mb-1">
-                        Court Positioning (YTEMS)
-                      </div>
-                      <div className="text-gray-600">
-                        Assesses strategic positioning and spatial awareness
-                      </div>
-                    </div>
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <div className="font-semibold text-gray-800 mb-1">
-                        Shot Consistency (YTEMS)
-                      </div>
-                      <div className="text-gray-600">
-                        Tracks rally length and error patterns
-                      </div>
-                    </div>
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <div className="font-semibold text-gray-800 mb-1">Match Context (SOP%)</div>
-                      <div className="text-gray-600">
-                        Weighs pressure situations and critical moments
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         </div>
 
-        <div className="text-center mt-6 text-xs text-gray-500">
-          <p>Powered by Raydel Racing Algorithm</p>
+        <div className="text-center mt-4 pb-4 text-xs text-gray-400">
+          <p>Powered by Raydel Racing Algorithm (RRA®)</p>
         </div>
       </div>
     </div>
