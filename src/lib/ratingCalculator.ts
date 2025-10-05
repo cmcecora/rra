@@ -16,7 +16,7 @@ export type TechnicalExecution = 'perfect-shot' | 'good-shot' | 'minor-error' | 
 
 export type Outcome = 'winner' | 'loser' | 'in' | 'out';
 
-export type CourtPosition = 'good' | 'bad' | 'strategic-change' | 'wall' | 'baseline' | 'net';
+export type CourtPosition = 'optimal' | 'strategic-change' | 'poor' | 'out-of-position';
 
 export type MatchContext = 'routine shot' | 'normal play' | 'crucial-point' | 'under-pressure';
 
@@ -50,17 +50,15 @@ const OUTCOME_MULTIPLIERS: Record<Outcome, number> = {
 };
 
 const POSITION_MULTIPLIERS: Record<CourtPosition, number> = {
-  'good': 1.0,
-  'bad': 1.3,
-  'strategic-change': 1.2,
-  'wall': 1.1,
-  'baseline': 1.0,
-  'net': 1.2,
+  'optimal': 2.0,           // +1 point bonus multiplier (1.0 base + 1.0 bonus)
+  'strategic-change': 1.5,  // +0.5 points
+  'poor': 0.5,              // reduces positive points by 50%
+  'out-of-position': 1.0,   // no bonus on successful shots
 };
 
 const CONTEXT_MULTIPLIERS: Record<MatchContext, number> = {
-  'routine': 0.8,
-  'normal': 1.0,
+  'routine shot': 0.8,
+  'normal play': 1.0,
   'crucial-point': 1.5,
   'under-pressure': 1.8,
 };
@@ -158,8 +156,8 @@ export const SHOT_TYPES: { value: ShotType; label: string }[] = [
 ];
 
 export const TECHNICAL_EXECUTIONS: { value: TechnicalExecution; label: string }[] = [
-  { value: 'perfect', label: 'Perfect' },
-  { value: 'good', label: 'Good' },
+  { value: 'perfect-shot', label: 'Perfect' },
+  { value: 'good-shot', label: 'Good' },
   { value: 'minor-error', label: 'Minor Error' },
   { value: 'major-error', label: 'Major Error' },
 ];
@@ -172,17 +170,15 @@ export const OUTCOMES: { value: Outcome; label: string }[] = [
 ];
 
 export const COURT_POSITIONS: { value: CourtPosition; label: string }[] = [
-  { value: 'good', label: 'Good' },
-  { value: 'bad', label: 'Bad' },
-  { value: 'strategic-change', label: 'Strategic Change' },
-  { value: 'wall', label: 'Wall' },
-  { value: 'baseline', label: 'Baseline' },
-  { value: 'net', label: 'Net' },
+  { value: 'optimal', label: 'Optimal Position' },
+  { value: 'strategic-change', label: 'Strategic Move' },
+  { value: 'poor', label: 'Poor Position' },
+  { value: 'out-of-position', label: 'Out of Position' },
 ];
 
 export const MATCH_CONTEXTS: { value: MatchContext; label: string }[] = [
-  { value: 'routine', label: 'Routine' },
-  { value: 'normal', label: 'Normal' },
+  { value: 'routine shot', label: 'Routine' },
+  { value: 'normal play', label: 'Normal' },
   { value: 'crucial-point', label: 'Crucial Point' },
   { value: 'under-pressure', label: 'Under Pressure' },
 ];

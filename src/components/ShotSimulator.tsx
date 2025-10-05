@@ -14,7 +14,6 @@ import {
   MATCH_CONTEXTS,
   RATING_LEVELS,
 } from '../lib/ratingCalculator';
-import { supabase, Player, Shot } from '../lib/supabase';
 import FormulaBreakdown from './FormulaBreakdown';
 
 interface QuickScenario {
@@ -32,12 +31,12 @@ interface QuickScenario {
 
 const QUICK_SCENARIOS: QuickScenario[] = [
   {
-    name: 'Vibora from bad position under pressure',
+    name: 'Vibora from poor position under pressure',
     config: {
       shotType: 'vibora',
-      technicalExecution: 'good',
+      technicalExecution: 'good-shot',
       outcome: 'winner',
-      courtPosition: 'bad',
+      courtPosition: 'poor',
       matchContext: 'under-pressure',
       consecutiveShots: 1,
       opponentRating: 1800,
@@ -47,21 +46,21 @@ const QUICK_SCENARIOS: QuickScenario[] = [
     name: 'Perfect lob strategic repositioning',
     config: {
       shotType: 'lob',
-      technicalExecution: 'perfect',
+      technicalExecution: 'perfect-shot',
       outcome: 'in',
       courtPosition: 'strategic-change',
-      matchContext: 'normal',
+      matchContext: 'normal play',
       consecutiveShots: 3,
       opponentRating: 1600,
     },
   },
   {
-    name: 'Chiquita at net crucial point',
+    name: 'Chiquita from optimal position crucial point',
     config: {
       shotType: 'chiquita',
-      technicalExecution: 'perfect',
+      technicalExecution: 'perfect-shot',
       outcome: 'winner',
-      courtPosition: 'net',
+      courtPosition: 'optimal',
       matchContext: 'crucial-point',
       consecutiveShots: 1,
       opponentRating: 2000,
@@ -73,19 +72,19 @@ const QUICK_SCENARIOS: QuickScenario[] = [
       shotType: 'drop',
       technicalExecution: 'minor-error',
       outcome: 'out',
-      courtPosition: 'baseline',
-      matchContext: 'normal',
+      courtPosition: 'out-of-position',
+      matchContext: 'normal play',
       consecutiveShots: 7,
       opponentRating: 1400,
     },
   },
   {
-    name: 'Bandeja winner from wall position',
+    name: 'Bandeja winner from optimal position',
     config: {
       shotType: 'bandeja',
-      technicalExecution: 'good',
+      technicalExecution: 'good-shot',
       outcome: 'winner',
-      courtPosition: 'wall',
+      courtPosition: 'optimal',
       matchContext: 'crucial-point',
       consecutiveShots: 2,
       opponentRating: 1500,
@@ -95,22 +94,22 @@ const QUICK_SCENARIOS: QuickScenario[] = [
     name: 'Back glass recovery shot',
     config: {
       shotType: 'back-glass',
-      technicalExecution: 'good',
+      technicalExecution: 'good-shot',
       outcome: 'in',
-      courtPosition: 'bad',
+      courtPosition: 'poor',
       matchContext: 'under-pressure',
       consecutiveShots: 5,
       opponentRating: 1800,
     },
   },
   {
-    name: 'Volley error at net routine',
+    name: 'Volley error out of position routine',
     config: {
       shotType: 'volley',
       technicalExecution: 'major-error',
       outcome: 'loser',
-      courtPosition: 'net',
-      matchContext: 'routine',
+      courtPosition: 'out-of-position',
+      matchContext: 'routine shot',
       consecutiveShots: 1,
       opponentRating: 1300,
     },
@@ -119,22 +118,22 @@ const QUICK_SCENARIOS: QuickScenario[] = [
     name: 'Perfect smash breaking opponent rhythm',
     config: {
       shotType: 'smash',
-      technicalExecution: 'perfect',
+      technicalExecution: 'perfect-shot',
       outcome: 'winner',
-      courtPosition: 'net',
-      matchContext: 'normal',
+      courtPosition: 'optimal',
+      matchContext: 'normal play',
       consecutiveShots: 4,
       opponentRating: 1600,
     },
   },
   {
-    name: 'Forehand rally sustainer from baseline',
+    name: 'Forehand rally sustainer from optimal position',
     config: {
       shotType: 'forehand',
-      technicalExecution: 'good',
+      technicalExecution: 'good-shot',
       outcome: 'in',
-      courtPosition: 'baseline',
-      matchContext: 'normal',
+      courtPosition: 'optimal',
+      matchContext: 'normal play',
       consecutiveShots: 9,
       opponentRating: 1500,
     },
@@ -186,9 +185,8 @@ function generateShotDescription(
   const opponentLevel = RATING_LEVELS.find((r) => r.value === opponentRating)?.label || `${opponentRating} rating`;
 
   const rallyText = consecutiveShots > 1 ? ` during ${consecutiveShots}-shot rally` : '';
-  const consecutiveType = consecutiveShots > 5 ? ', maintaining rhythm' : consecutiveShots > 3 ? ', building pressure' : '';
 
-  return `A ${shotTypeLabel.toLowerCase()}, ${techLabel.toLowerCase()}, from ${positionLabel.toLowerCase()} position, ${outcomeLabel.toLowerCase()}${rallyText}${consecutiveType}, ${contextLabel.toLowerCase()} play against ${opponentLevel} opponent`;
+  return `A ${shotTypeLabel.toLowerCase()}, ${techLabel.toLowerCase()}, from ${positionLabel.toLowerCase()} position, ${outcomeLabel.toLowerCase()}${rallyText}, ${contextLabel.toLowerCase()} play against ${opponentLevel} opponent`;
 }
 
 export default function ShotSimulator() {
@@ -196,10 +194,10 @@ export default function ShotSimulator() {
   const [shotHistory, setShotHistory] = useState<LocalShot[]>([]);
 
   const [shotType, setShotType] = useState<ShotType>('forehand');
-  const [technicalExecution, setTechnicalExecution] = useState<TechnicalExecution>('good');
+  const [technicalExecution, setTechnicalExecution] = useState<TechnicalExecution>('good-shot');
   const [outcome, setOutcome] = useState<Outcome>('in');
-  const [courtPosition, setCourtPosition] = useState<CourtPosition>('good');
-  const [matchContext, setMatchContext] = useState<MatchContext>('normal');
+  const [courtPosition, setCourtPosition] = useState<CourtPosition>('optimal');
+  const [matchContext, setMatchContext] = useState<MatchContext>('normal play');
   const [consecutiveShots, setConsecutiveShots] = useState(1);
   const [opponentRating, setOpponentRating] = useState(1500);
   const [notes, setNotes] = useState('');
@@ -215,6 +213,20 @@ export default function ShotSimulator() {
     if (technicalExecution === 'minor-error' || technicalExecution === 'major-error') {
       if (outcome !== 'loser' && outcome !== 'out') {
         setOutcome('loser');
+        return;
+      }
+    }
+
+    if (technicalExecution === 'perfect-shot') {
+      if (outcome !== 'winner' && outcome !== 'in') {
+        setOutcome('winner');
+        return;
+      }
+    }
+
+    if (shotType === 'serve') {
+      if (consecutiveShots !== 1) {
+        setConsecutiveShots(1);
         return;
       }
     }
@@ -315,11 +327,13 @@ export default function ShotSimulator() {
         let randomOutcome = OUTCOMES[Math.floor(Math.random() * OUTCOMES.length)].value;
         const randomCourtPosition = COURT_POSITIONS[Math.floor(Math.random() * COURT_POSITIONS.length)].value;
         const randomMatchContext = MATCH_CONTEXTS[Math.floor(Math.random() * MATCH_CONTEXTS.length)].value;
-        const randomConsecutiveShots = Math.floor(Math.random() * 9) + 1;
+        const randomConsecutiveShots = randomShotType === 'serve' ? 1 : Math.floor(Math.random() * 9) + 1;
         const randomOpponentRating = RATING_LEVELS[Math.floor(Math.random() * RATING_LEVELS.length)].value;
 
         if (randomTechnicalExecution === 'minor-error' || randomTechnicalExecution === 'major-error') {
           randomOutcome = Math.random() > 0.5 ? 'loser' : 'out';
+        } else if (randomTechnicalExecution === 'perfect-shot') {
+          randomOutcome = Math.random() > 0.5 ? 'winner' : 'in';
         }
 
         const shotTypeLabel = SHOT_TYPES.find((t) => t.value === randomShotType)?.label || '';

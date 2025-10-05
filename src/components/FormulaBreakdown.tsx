@@ -36,8 +36,8 @@ const BASE_SHOT_VALUES: Record<ShotType, number> = {
 };
 
 const TECHNICAL_MULTIPLIERS: Record<TechnicalExecution, number> = {
-  'perfect': 2.0,
-  'good': 1.5,
+  'perfect-shot': 2.0,
+  'good-shot': 1.5,
   'minor-error': 0.8,
   'major-error': 0.3,
 };
@@ -50,17 +50,15 @@ const OUTCOME_MULTIPLIERS: Record<Outcome, number> = {
 };
 
 const POSITION_MULTIPLIERS: Record<CourtPosition, number> = {
-  'good': 1.0,
-  'bad': 1.3,
-  'strategic-change': 1.2,
-  'wall': 1.1,
-  'baseline': 1.0,
-  'net': 1.2,
+  'optimal': 2.0,           // +1 point bonus multiplier (1.0 base + 1.0 bonus)
+  'strategic-change': 1.5,  // +0.5 points
+  'poor': 0.5,              // reduces positive points by 50%
+  'out-of-position': 1.0,   // no bonus on successful shots
 };
 
 const CONTEXT_MULTIPLIERS: Record<MatchContext, number> = {
-  'routine': 0.8,
-  'normal': 1.0,
+  'routine shot': 0.8,
+  'normal play': 1.0,
   'crucial-point': 1.5,
   'under-pressure': 1.8,
 };
