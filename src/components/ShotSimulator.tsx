@@ -405,33 +405,8 @@ export default function ShotSimulator() {
 
             {/* Scrollable Scenarios */}
             <div className="flex-1 overflow-y-auto p-3 space-y-2">
-              {QUICK_SCENARIOS.map((scenario, index) => (
-                <button
-                  key={index}
-                  onClick={() => applyQuickScenario(scenario)}
-                  className="w-full bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white p-3 rounded-lg text-left transition-all shadow-sm hover:shadow-md group"
-                >
-                  <div className="flex items-start justify-between mb-1.5">
-                    <div className="text-xs font-bold leading-tight pr-2">{scenario.name}</div>
-                    <div className="text-[10px] bg-white/25 px-1.5 py-0.5 rounded font-medium whitespace-nowrap">
-                      {scenario.config.opponentRating}
-                    </div>
-                  </div>
-                  <div className="text-[10px] text-blue-50 space-y-0.5">
-                    <div>
-                      {SHOT_TYPES.find((t) => t.value === scenario.config.shotType)?.label} • {' '}
-                      {TECHNICAL_EXECUTIONS.find((t) => t.value === scenario.config.technicalExecution)?.label}
-                    </div>
-                    <div>
-                      {OUTCOMES.find((o) => o.value === scenario.config.outcome)?.label} • {' '}
-                      {MATCH_CONTEXTS.find((c) => c.value === scenario.config.matchContext)?.label}
-                    </div>
-                  </div>
-                </button>
-              ))}
-
               {randomScenarios.length > 0 && (
-                <div className="border-t border-gray-200 pt-2 mt-2">
+                <>
                   <div className="space-y-2">
                     {randomScenarios.map((scenario, index) => (
                       <button
@@ -458,8 +433,34 @@ export default function ShotSimulator() {
                       </button>
                     ))}
                   </div>
-                </div>
+                  <div className="border-t border-gray-200 pt-2 mt-2"></div>
+                </>
               )}
+
+              {QUICK_SCENARIOS.map((scenario, index) => (
+                <button
+                  key={index}
+                  onClick={() => applyQuickScenario(scenario)}
+                  className="w-full bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white p-3 rounded-lg text-left transition-all shadow-sm hover:shadow-md group"
+                >
+                  <div className="flex items-start justify-between mb-1.5">
+                    <div className="text-xs font-bold leading-tight pr-2">{scenario.name}</div>
+                    <div className="text-[10px] bg-white/25 px-1.5 py-0.5 rounded font-medium whitespace-nowrap">
+                      {scenario.config.opponentRating}
+                    </div>
+                  </div>
+                  <div className="text-[10px] text-blue-50 space-y-0.5">
+                    <div>
+                      {SHOT_TYPES.find((t) => t.value === scenario.config.shotType)?.label} • {' '}
+                      {TECHNICAL_EXECUTIONS.find((t) => t.value === scenario.config.technicalExecution)?.label}
+                    </div>
+                    <div>
+                      {OUTCOMES.find((o) => o.value === scenario.config.outcome)?.label} • {' '}
+                      {MATCH_CONTEXTS.find((c) => c.value === scenario.config.matchContext)?.label}
+                    </div>
+                  </div>
+                </button>
+              ))}
             </div>
           </div>
 
